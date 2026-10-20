@@ -5,5 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "marimo>=0.25.2",
+    "mpltern>=1.0.5",
+    "plotly>=7.1.0",
+    "plotnine>=0.15.8",
+    "polars>=2.0.0",
+    "pyarrow>=26.0.0",
     "pydytuesday>=0.1.2",
+    "requests>=2.34.2",
 ]
