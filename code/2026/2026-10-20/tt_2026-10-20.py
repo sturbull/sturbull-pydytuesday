@@ -196,12 +196,6 @@ def _(mo):
 
 
 @app.cell
-def _(df2):
-    df2
-    return
-
-
-@app.cell
 def _(df2, pl):
     import plotnine as pn
 
@@ -232,7 +226,7 @@ def _(df_filtered, pl):
 
 @app.cell
 def _(mo):
-    top_n = mo.ui.slider(1, 30, value=10, label="Highlight Top N")
+    top_n = mo.ui.slider(1, 30, value=6, label="Highlight Top N")
     top_n
     return (top_n,)
 
