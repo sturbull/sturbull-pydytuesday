@@ -116,6 +116,21 @@ def _(mo):
 
 @app.cell
 def _(mo):
+    from matplotlib import font_manager
+
+    font_manager.fontManager.addfont(mo.notebook_dir().parents[2] / "fonts" / "fa-brands-400.ttf")
+
+    caption = (
+        "Steven Turnbull | #PydyTuesday #TidyTuesday 2026-10-21\n"
+        "sturbull.github.io   \uf09b sturbull   \uf08c steven-martin-turnbull\n"
+        "Data: US Dept. of Education College Scorecard; AI Occupational Exposure (Felten, Raj & Seamans)"
+    )
+
+    return (caption,)
+
+
+@app.cell
+def _(mo):
     colour_option = mo.ui.dropdown(
         options=["orange", "red", "green", "blue"],
         allow_select_none=False,
@@ -261,12 +276,12 @@ def _(big_diffs, df_complete_filtered, pl):
 
 
 @app.cell
-def _(df_complete_filtered, df_topN, pn):
+def _(caption, df_complete_filtered, df_topN, pn):
     from mizani.labels import label_comma
 
     plot_plotnine = (
         pn.ggplot()
-    
+
         + pn.geom_segment(
             pn.aes(
                 x="median_starting_salary",
@@ -285,29 +300,11 @@ def _(df_complete_filtered, df_topN, pn):
             ),
             df_complete_filtered,
         )
-        # + pn.geom_point(
-        #     pn.aes(
-        #         y="field_of_study",
-        #         x="median_starting_salary",
-        #     ),
-        #     df_topN,
-        #     colour = "yellow"
-
-        # )
-        # + pn.geom_segment(
-        #     pn.aes(
-        #         x="median_starting_salary",
-        #         xend="median_salary_4yr",
-        #         y="field_of_study",
-        #         yend="field_of_study"
-        #         ),
-        #     df_topN,
-        #     color = "yellow",
-        # )
         + pn.geom_text(
             pn.aes(x="median_salary_4yr", y="field_of_study", label="field_of_study"),
             df_topN,
             size=7,
+            color = "#E6E6E6",
             adjust_text={
                 "arrowprops": {
                     "arrowstyle": "-",
@@ -323,7 +320,8 @@ def _(df_complete_filtered, df_topN, pn):
         + pn.ggtitle(
             "Difference Between Starting Salary and Salary After 4 Years",
             subtitle = f"Top {df_topN.height} highlighted"
-        )
+        ) 
+        + pn.labs(caption=caption)
         + pn.theme(
             figure_size=(8, 10),
             axis_text_y=pn.element_blank(),
@@ -333,27 +331,25 @@ def _(df_complete_filtered, df_topN, pn):
             axis_title_y=pn.element_blank(),
             legend_position="none",
             dpi=600,
-            plot_background=pn.element_rect(fill="#FAF9F6", colour="#FAF9F6"),
-            panel_background=pn.element_rect(fill="#FAF9F6"),
+            plot_caption=pn.element_text(family=["DejaVu Sans", "Font Awesome 6 Brands"], size=7, ha="left"),
+            plot_caption_position="plot",
+            plot_background=pn.element_rect(fill="#1E2130", colour="#1E2130"),
+            panel_background=pn.element_rect(fill="#1E2130"),
+            text=pn.element_text(colour="#E6E6E6"),
+            panel_grid_major_x=pn.element_line(colour="#3A3F4F"),
+            panel_grid_minor_x=pn.element_blank(),
+
         )
     )
 
     plot_plotnine
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    # Altair
-    """)
-    return
+    return (plot_plotnine,)
 
 
 @app.cell
-def _(df_complete):
-    df_complete
-    return
+def _(plot_plotnine):
+    plot = plot_plotnine
+    return (plot,)
 
 
 @app.cell

@@ -2,6 +2,10 @@
 
 Repo for storing [TidyTuesday](https://github.com/rfordatascience/tidytuesday) work and visualisations in Python.
 
+Latest plot: [2026-10-20](final/2026-10-20-plot.png)
+
+![2026-10-20 TidyTuesday plot](final/2026-10-20-plot.png)
+
 ## Setup
 
 Install [uv](https://docs.astral.sh/uv/), then install the dependencies:
