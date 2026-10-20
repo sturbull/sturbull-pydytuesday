@@ -30,9 +30,10 @@ def _():
     import contextlib
 
     import marimo as mo
+    import plotnine as pn
     import polars as pl
     import pydytuesday
-    return contextlib, mo, pl, pydytuesday
+    return contextlib, mo, pl, pn, pydytuesday
 
 
 @app.cell
@@ -105,9 +106,39 @@ def _(mo):
     mo.md(r"""
     ## Visualise
 
-    Assign the finished plotnine plot to `plot`.
+    Assign the finished plotnine plot to `plot`, and end it with `+ caption`.
     """)
     return
+
+
+@app.cell
+def _(DATA_DIR, DATE, mo, pn):
+    import yaml
+    from matplotlib import font_manager
+
+    # Font Awesome Brands supplies the GitHub and LinkedIn icons. Matplotlib falls back to it
+    # for glyphs DejaVu Sans doesn't have.
+    font_manager.fontManager.addfont(mo.notebook_dir().parents[2] / "fonts" / "fa-brands-400.ttf")
+
+    # Weeks from 2024 onwards ship a meta.yaml that names the data source.
+    _meta_path = DATA_DIR / "meta.yaml"
+    _meta = yaml.safe_load(_meta_path.read_text(encoding="utf-8")) if _meta_path.exists() else {}
+    _source = _meta.get("data_source", {}).get("title", "TidyTuesday")
+
+    caption = [
+        pn.labs(
+            caption=(
+                f"Steven Turnbull | #PydyTuesday #TidyTuesday {DATE}\n"
+                "sturbull.github.io    sturbull    steven-martin-turnbull\n"
+                f"Data: {_source}"
+            )
+        ),
+        pn.theme(
+            plot_caption=pn.element_text(family=["DejaVu Sans", "Font Awesome 6 Brands"], size=7, ha="left"),
+            plot_caption_position="plot",
+        ),
+    ]
+    return (caption,)
 
 
 @app.cell

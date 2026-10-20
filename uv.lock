@@ -1504,6 +1504,7 @@ dependencies = [
     { name = "polars" },
     { name = "pyarrow" },
     { name = "pydytuesday" },
+    { name = "pyyaml" },
     { name = "requests" },
 ]
 
@@ -1519,6 +1520,7 @@ requires-dist = [
     { name = "polars", specifier = ">=2.0.0" },
     { name = "pyarrow", specifier = ">=26.0.0" },
     { name = "pydytuesday", specifier = ">=0.1.2" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
 

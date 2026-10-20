@@ -30,4 +30,6 @@ On the first run, the notebook downloads the week's CSV files into a `data/` fol
 
 The notebook loads each CSV into the `tt` dictionary, keyed by file name, and shows a tab for each table. After those come an empty cell for wrangling and a Visualise cell where you assign your plotnine plot to `plot`.
 
+The Visualise section also defines `caption`, a list of plotnine components that adds a caption with my name, the week's date, my website, GitHub and LinkedIn, and the data source. End the plot with `+ caption`. The data source comes from the week's `meta.yaml`; weeks without one show "TidyTuesday". The GitHub and LinkedIn icons come from the Font Awesome Brands font in `fonts/` (SIL OFL 1.1, see `fonts/LICENSE-fontawesome.txt`).
+
 The Save image cell has a "Save to final/" button. It writes `plot` to `final/<date>-<FILENAME>`, for example `final/2025-01-07-rainfall.png`. Set `FILENAME` in that cell; its extension (`.png`, `.jpg`, `.svg`, `.pdf`) sets the format.
