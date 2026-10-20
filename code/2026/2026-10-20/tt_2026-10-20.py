@@ -118,7 +118,9 @@ def _(mo):
 def _(mo):
     from matplotlib import font_manager
 
-    font_manager.fontManager.addfont(mo.notebook_dir().parents[2] / "fonts" / "fa-brands-400.ttf")
+    font_manager.fontManager.addfont(
+        mo.notebook_dir().parents[2] / "fonts" / "fa-brands-400.ttf"
+    )
 
     caption = (
         "Steven Turnbull | #PydyTuesday #TidyTuesday 2026-10-21\n"
@@ -214,15 +216,13 @@ def _(mo):
 def _(df2, pl):
     import plotnine as pn
 
-    df_filtered = (df2
-        .drop_nulls("median_salary_4yr")
-        .filter(
-            pl.col("median_starting_salary") > 50000
-        )
+    df_filtered = (
+        df2.drop_nulls("median_salary_4yr")
+        .filter(pl.col("median_starting_salary") > 50000)
         .with_columns(
             salary_diff=pl.col("median_salary_4yr") - pl.col("median_starting_salary")
         )
-        )
+    )
     return df_filtered, pn
 
 
@@ -250,8 +250,7 @@ def _(mo):
 def _(df_filtered, top_n):
 
     big_diffs = (
-        df_filtered
-        .sort(by="salary_diff", descending=True)
+        df_filtered.sort(by="salary_diff", descending=True)
         .head(top_n.value)
         .get_column("field_of_study")
         .to_list()
@@ -281,14 +280,13 @@ def _(caption, df_complete_filtered, df_topN, pn):
 
     plot_plotnine = (
         pn.ggplot()
-
         + pn.geom_segment(
             pn.aes(
                 x="median_starting_salary",
                 xend="median_salary_4yr",
                 y="field_of_study",
                 yend="field_of_study",
-                colour = "salary_diff"
+                colour="salary_diff",
             ),
             df_complete_filtered,
         )
@@ -296,7 +294,7 @@ def _(caption, df_complete_filtered, df_topN, pn):
             pn.aes(
                 y="field_of_study",
                 x="median_starting_salary",
-                color = "salary_diff", 
+                color="salary_diff",
             ),
             df_complete_filtered,
         )
@@ -304,7 +302,7 @@ def _(caption, df_complete_filtered, df_topN, pn):
             pn.aes(x="median_salary_4yr", y="field_of_study", label="field_of_study"),
             df_topN,
             size=7,
-            color = "#E6E6E6",
+            color="#E6E6E6",
             adjust_text={
                 "arrowprops": {
                     "arrowstyle": "-",
@@ -314,13 +312,11 @@ def _(caption, df_complete_filtered, df_topN, pn):
                 }
             },
         )
-        + pn.scale_x_continuous(
-            name="Salary (Median $)",
-            labels=label_comma())
+        + pn.scale_x_continuous(name="Salary (Median $)", labels=label_comma())
         + pn.ggtitle(
             "Difference Between Starting Salary and Salary After 4 Years",
-            subtitle = f"Top {df_topN.height} highlighted"
-        ) 
+            subtitle=f"Top {df_topN.height} fields of study highlighted",
+        )
         + pn.labs(caption=caption)
         + pn.theme(
             figure_size=(8, 10),
@@ -331,14 +327,15 @@ def _(caption, df_complete_filtered, df_topN, pn):
             axis_title_y=pn.element_blank(),
             legend_position="none",
             dpi=600,
-            plot_caption=pn.element_text(family=["DejaVu Sans", "Font Awesome 6 Brands"], size=7, ha="left"),
+            plot_caption=pn.element_text(
+                family=["DejaVu Sans", "Font Awesome 6 Brands"], size=7, ha="left"
+            ),
             plot_caption_position="plot",
             plot_background=pn.element_rect(fill="#1E2130", colour="#1E2130"),
             panel_background=pn.element_rect(fill="#1E2130"),
             text=pn.element_text(colour="#E6E6E6"),
             panel_grid_major_x=pn.element_line(colour="#3A3F4F"),
             panel_grid_minor_x=pn.element_blank(),
-
         )
     )
 
