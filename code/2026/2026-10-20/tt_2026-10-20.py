@@ -205,15 +205,20 @@ def _(df2):
 def _(df2, pl):
     import plotnine as pn
 
-    df_filtered = df2.drop_nulls("median_salary_4yr").filter(
-        pl.col("median_starting_salary") > 50000
-    )
+    df_filtered = (df2
+        .drop_nulls("median_salary_4yr")
+        .filter(
+            pl.col("median_starting_salary") > 50000
+        )
+        .with_columns(
+            salary_diff=pl.col("median_salary_4yr") - pl.col("median_starting_salary")
+        )
+        )
     return df_filtered, pn
 
 
 @app.cell
 def _(df_filtered, pl):
-
     # get order of occupation_field for enum
     salary_order = (
         df_filtered.group_by("field_of_study")
@@ -233,12 +238,10 @@ def _(mo):
 
 
 @app.cell
-def _(df_filtered, pl, top_n):
+def _(df_filtered, top_n):
 
     big_diffs = (
-        df_filtered.with_columns(
-            salary_diff=pl.col("median_salary_4yr") - pl.col("median_starting_salary")
-        )
+        df_filtered
         .sort(by="salary_diff", descending=True)
         .head(top_n.value)
         .get_column("field_of_study")
@@ -269,42 +272,44 @@ def _(df_complete_filtered, df_topN, pn):
 
     plot_plotnine = (
         pn.ggplot()
-        + pn.geom_point(
-            pn.aes(
-                y="field_of_study",
-                x="median_starting_salary",
-            ),
-            df_complete_filtered,
-            color="lightgrey",
-        )
+    
         + pn.geom_segment(
             pn.aes(
                 x="median_starting_salary",
                 xend="median_salary_4yr",
                 y="field_of_study",
                 yend="field_of_study",
+                colour = "salary_diff"
             ),
             df_complete_filtered,
-            colour="lightgrey",
         )
         + pn.geom_point(
             pn.aes(
                 y="field_of_study",
                 x="median_starting_salary",
-                colour="broad_field_short",
+                color = "salary_diff", 
             ),
-            df_topN,
+            df_complete_filtered,
         )
-        + pn.geom_segment(
-            pn.aes(
-                x="median_starting_salary",
-                xend="median_salary_4yr",
-                y="field_of_study",
-                yend="field_of_study",
-                colour="broad_field_short",
-            ),
-            df_topN,
-        )
+        # + pn.geom_point(
+        #     pn.aes(
+        #         y="field_of_study",
+        #         x="median_starting_salary",
+        #     ),
+        #     df_topN,
+        #     colour = "yellow"
+
+        # )
+        # + pn.geom_segment(
+        #     pn.aes(
+        #         x="median_starting_salary",
+        #         xend="median_salary_4yr",
+        #         y="field_of_study",
+        #         yend="field_of_study"
+        #         ),
+        #     df_topN,
+        #     color = "yellow",
+        # )
         + pn.geom_text(
             pn.aes(x="median_salary_4yr", y="field_of_study", label="field_of_study"),
             df_topN,
@@ -333,6 +338,9 @@ def _(df_complete_filtered, df_topN, pn):
             panel_grid_minor_y=pn.element_blank(),
             axis_title_y=pn.element_blank(),
             legend_position="none",
+            dpi=600,
+            plot_background=pn.element_rect(fill="#FAF9F6", colour="#FAF9F6"),
+            panel_background=pn.element_rect(fill="#FAF9F6"),
         )
     )
 
